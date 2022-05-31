@@ -1,4 +1,6 @@
 #include "main.h"
+#include <stdio.h>
+#include <stdlib.h>
 
 /**
  * binary_to_unit - converts binary to an unsigned int
@@ -8,22 +10,22 @@
 
 unsigned int binary_to_unit(const char *b)
 {
-	int j;
+	int i;
 	unsigned int n;
 
-	j = 0;
+	i = 0;
 	n = 0;
 
 	if (!b)
 		return (0);
 
-	while (b[j] != '\0')
+	while (b[i] != '\0')
 	{
-		if (b[j] == '1')
+		if (b[i] == '1')
 		{
 			n = n * 2 + 1;
 		}
-		else if (b[j] == '0')
+		else if (b[i] == '0')
 		{
 			n = n * 2;
 		}
@@ -31,7 +33,7 @@ unsigned int binary_to_unit(const char *b)
 		{
 			return (0);
 		}
-		j++;
+		i++;
 	}
 
 	return (n);
