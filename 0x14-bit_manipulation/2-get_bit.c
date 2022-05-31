@@ -1,0 +1,24 @@
+#include "main.h"
+
+/**
+ * get_bit - gets the value of a bit at a given index
+ * @n: number to be converted
+ * @index: index of the bit to be checked
+ * Return: the value of the bit at index or -1 for failures
+ */
+
+int get_bit(unsigned long int n, unsigned int index)
+{
+	int mat;
+	int bit;
+
+	if (index > sizeof(unsigned long int) * 8)
+	{
+		return (-1);
+	}
+	mat = 1 << index;
+	bit = n & mask;
+	bit = bit >> index;
+
+	return (bit);
+}
