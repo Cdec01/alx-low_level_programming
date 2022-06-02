@@ -1,76 +1,52 @@
 #include "main.h"
 
 /**
- * cp - copies file from a source to dest
+ * c_from - fills memory with a constant byte
  * @file_from: file from
- * @file_to: destination file
- * Return: integer
+ * Return: an integer
  */
 
-int cp(char *file_from, char *file_to)
+void c_from(char *file_from)
 {
-	int pd, qd, qr, qw;
-	int qc, qpc;
-	char *buff[1024];
-
-	qc = open(file_from, O_RDONLY);
-	if (qc < 0)
-	{
-		return (98);
-	}
-
-	pd = open(file_to, O_CREAT | O_WRONLY | O_TRUNC, 0664);
-	if (pd < 0)
-	{
-		return (99);
-	}
-
-	qr = read(qd, buff, 1024);
-	if (qr < 0)
-	{
-		return (98);
-	}
-
-	while (qr > 0)
-	{
-		qw = write(pd, buff, qr);
-		if (qw < 0)
-		{
-			return (99);
-		}
-		qr = read(qd, buff, 1024);
-		if (qr < 0)
-		{
-			return (98);
-		}
-	}
-
-	qc = close(qd);
-	if (qc < 0)
-	{
-		dprintf(STDERR_FILENO, "Error: Can't close qd %d\n", qc);
-		return (100);
-	}
-
-	qpc = close(qd);
-	if (qpc < 0)
-	{
-		dprintf(STDERR_FILENO, "Error: Can't close qd %d\n", qpc);
-		return (100);
-	}
-	return (0);
+	dprintf(STDERR_FILENO, "Error: Can't read from file %s\n", file_from);
+	exit(98);
 }
 
 /**
- * main - copies the content of a file to another file
- * @argc: number of arguments
- * @argv: array of arguments
- * Return: the actual number of letters read
+ * c_to - fills memory with a constant byte
+ * @file_to: is the size of the pointer
+ * Return: an integer
  */
 
-int main(int argc, char *argv)
+void c_to(char *file_to)
 {
-	int n;
+	dprintf(STDERR_FILENO, "Error: Can't write to %s\n", file_to);
+	exit(99);
+}
+
+/**
+ * c_fd - fills memory with a constant byte
+ * @file: file to work on
+ * Return: an integer
+ */
+
+void c_fd(char *file)
+{
+	dprintf(STDERR_FILENO, "Error: Can't close fd %s\n", file);
+	exit(100);
+}
+
+/**
+ * main - fills memory with a constant byte
+ * @argc: is the size of the pointer
+ * @argv: an index
+ * Return: an integer
+ */
+
+int main(int argc, char **argv)
+{
+	int file1 = 0, file2 = 0, rd = 0, wr = 0;
+	char *file_from, *file_to, buff[1024];
 
 	if (argc != 3)
 	{
@@ -78,20 +54,31 @@ int main(int argc, char *argv)
 		exit(97);
 	}
 
-	n = cp(argv[1], argv[2]);
-	switch (n);
+	file_from = argv[1];
+	file_to = argv[2];
+
+	file1 = open(file_from, O_RDONLY);
+	if (file1 == -1)
+		c_from(file_from);
+
+	file2 = open(file_to, O_WRONLY | O_CREAT | O_TRUNC, 0664);
+	if (file2 == -1)
+		c_to(file_to);
+
+	for (rd = read(file1, buff, 1024); rd > 0; rd = read(file1, buff, 1024))
 	{
-		case (98):
-			dprintf(STDERR_FILENO, "Error: Can't read from file %s\n", argv[1]);
-			exit(98);
-
-		case (99):
-			dprintf(STDERR_FILENO, "Error: Can't write to %s\n", argv[2]);
-			exit(99);
-
-		case (100):
-			exit(100);
-		default:
-			return (0);
+		wr = write(file2, buff, rd);
+		if (wr == -1)
+			c_to(file_to);
 	}
+
+	if (rd == -1)
+		c_from(file_from);
+
+	if (close(file1) == -1)
+		c_fd(file_from);
+
+	if (close(file2) == -1)
+		c_fd(file_to);
+	return (0);
 }
